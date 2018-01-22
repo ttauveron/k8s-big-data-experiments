@@ -1,11 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-echo "bonjour!" >> bonjour.txt
 
-if [ "$MYSQL_DATABASE" ]; then
-    echo $MYSQL_DATABASE >> /test.txt
+if [ "$AWS_ACCESS_KEY" ] && [ "$AWS_SECRET_KEY" ]
+then
+    sed -i -e "s/\${aws_access_key}/$AWS_ACCESS_KEY/" \
+        -e "s/\${aws_secret_key}/$AWS_SECRET_KEY/" \
+        /root/spark/conf/spark-defaults.conf
 fi
 
 exec "$@"

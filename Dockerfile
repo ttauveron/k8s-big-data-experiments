@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM java:8
 
 ARG SPARK_VERSION=2.2.1
 ARG AWS_JAVA_SDK_VERSION=1.7.4
@@ -12,6 +12,8 @@ RUN ln -s $USER_HOME_DIR/spark* $USER_HOME_DIR/spark && \
     mkdir -p $USER_HOME_DIR/spark/extras && \
     wget http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar -P $USER_HOME_DIR/spark/extras && \
     wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar -P $USER_HOME_DIR/spark/extras
+
+ADD spark-defaults.conf /root/spark/conf/spark-defaults.conf
 
 ADD entrypoint.sh /entrypoint.sh
 

@@ -7,6 +7,11 @@ metadata:
 spec:
   ports:
     - port: 7077
+      nodePort: 30077
+      name: spark
+    - port: 8080
+      nodePort: 30080
+      name: sparkui
   selector:
     app: spark
     tier: sparktier
@@ -35,16 +40,21 @@ spec:
       - image: myspark
         name: myspark
         env:
-        - name: MYSQL_DATABASE
-          value: helloworld
-        # - name: WORDPRESS_DB_PASSWORD
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: mysql-pass
-        #       key: password
+        - name: AWS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws
+              key: accesskey
+        - name: AWS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws
+              key: secretkey
         ports:
         - containerPort: 7077
           name: spark
+        - containerPort: 8080
+          name: sparkui
         command: [ "/entrypoint.sh" ]
-        args: ["tail","-f","/dev/null"]
+        args: ["/root/spark/bin/spark-class","org.apache.spark.deploy.master.Master"]
         imagePullPolicy: Never
