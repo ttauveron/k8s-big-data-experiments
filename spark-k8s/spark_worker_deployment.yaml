@@ -3,20 +3,18 @@ kind: Deployment
 metadata:
   name: spark-worker
   labels:
-    app: spark
+    component: spark-worker
 spec:
   replicas: 4
   selector:
     matchLabels:
-      app: spark
-      tier: sparktier
+      component: spark-worker
   strategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: spark
-        tier: sparktier
+        component: spark-worker
     spec:
       containers:
       - image: myspark
