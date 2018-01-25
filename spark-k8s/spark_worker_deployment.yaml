@@ -22,5 +22,5 @@ spec:
         ports:
         - containerPort: 8081
           name: spark
-        command: ["/root/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]
+        command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]
         imagePullPolicy: Never
