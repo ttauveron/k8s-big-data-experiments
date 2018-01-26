@@ -1,0 +1,172 @@
+{
+	"info": {
+		"name": "Livy REST API",
+		"_postman_id": "c3d4808b-307b-8b60-ddf1-c56d5b45a2b8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Create session",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"kind\": \"spark\"\n}"
+				},
+				"url": {
+					"raw": "192.168.99.100:30998/sessions",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "30998",
+					"path": [
+						"sessions"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "2. List Sessions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:30998/sessions",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "30998",
+					"path": [
+						"sessions"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:30998/sessions/0",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "30998",
+					"path": [
+						"sessions",
+						"0"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "4. Create statement in a session",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"code\": \" val NUM_SAMPLES = 100000; \\n     val count = sc.parallelize(1 to NUM_SAMPLES).map { i => \\n       val x = Math.random(); \\n       val y = Math.random(); \\n       if (x*x + y*y < 1) 1 else 0\\n     }.reduce(_ + _);\\n     println(\\\"Pi is roughly \\\" + 4.0 * count / NUM_SAMPLES)\"}"
+				},
+				"url": {
+					"raw": "192.168.99.100:30998/sessions/0/statements",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "30998",
+					"path": [
+						"sessions",
+						"0",
+						"statements"
+					]
+				},
+				"description": "Send Scala code to be executed by Spark"
+			},
+			"response": []
+		},
+		{
+			"name": "5. List statements of a session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:30998/sessions/0/statements",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "30998",
+					"path": [
+						"sessions",
+						"0",
+						"statements"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "6. Get result of statement",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "192.168.99.100:30998/sessions/0/statements/0",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "30998",
+					"path": [
+						"sessions",
+						"0",
+						"statements",
+						"0"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
