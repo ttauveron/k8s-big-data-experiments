@@ -16,12 +16,12 @@ ADD spark-$SPARK_VERSION-bin-hadoop2.7.tgz /opt
 
 RUN ln -s /opt/spark* /opt/spark && \
     mkdir -p /opt/spark/extras && \
-    wget http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar -P $USER_HOME_DIR/spark/extras && \
-    wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar -P $USER_HOME_DIR/spark/extras
+    wget http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar -P /opt/spark/extras && \
+    wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar -P /opt/spark/extras
 
 ENV SPARK_HOME=/opt/spark
 
-ADD spark-defaults.conf /root/spark/conf/spark-defaults.conf
+ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ADD entrypoint.sh /entrypoint.sh
 
 RUN wget -P /opt http://mirror.its.dal.ca/apache/incubator/livy/${LIVY_RELEASE}/livy-${LIVY_RELEASE}-bin.zip
