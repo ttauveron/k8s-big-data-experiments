@@ -5,7 +5,7 @@ metadata:
   labels:
     component: spark-worker
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
       component: spark-worker
@@ -22,5 +22,12 @@ spec:
         ports:
         - containerPort: 8081
           name: spark
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "100m"
+            memory: "256Mi"
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]
         imagePullPolicy: Never
