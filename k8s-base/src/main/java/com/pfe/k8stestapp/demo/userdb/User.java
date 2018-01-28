@@ -1,4 +1,4 @@
-package com.pfe.k8stestapp.demo;
+package com.pfe.k8stestapp.demo.userdb;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

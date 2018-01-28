@@ -1,4 +1,4 @@
-package com.pfe.k8stestapp.demo;
+package com.pfe.k8stestapp.demo.greeter;
 
 public class Greeting {
 

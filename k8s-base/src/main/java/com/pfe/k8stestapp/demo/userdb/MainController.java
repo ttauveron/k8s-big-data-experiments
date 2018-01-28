@@ -1,4 +1,4 @@
-package com.pfe.k8stestapp.demo;
+package com.pfe.k8stestapp.demo.userdb;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.pfe.k8stestapp.demo.User;
-import com.pfe.k8stestapp.demo.UserRepository;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Controller    // This means that this class is a Controller
 @RequestMapping(path="/demo") // This means URL's start with /demo (after Application path)
@@ -28,6 +28,19 @@ public class MainController {
         n.setEmail(email);
         userRepository.save(n);
         return "Saved";
+    }
+
+    @GetMapping(path="/get")
+    public @ResponseBody User getUser(@RequestParam String name)
+    {
+        Optional<User> user = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                                           .filter(u -> u.getName().equals(name))
+                                           .findFirst();
+
+        if(user.isPresent())
+            return user.get();
+        else
+            return new User();
     }
 
     @GetMapping(path="/all")

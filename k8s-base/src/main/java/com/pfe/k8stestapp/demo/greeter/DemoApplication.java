@@ -1,4 +1,4 @@
-package com.pfe.k8stestapp.demo;
+package com.pfe.k8stestapp.demo.greeter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,5 +10,3 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 }
-
-//30m
