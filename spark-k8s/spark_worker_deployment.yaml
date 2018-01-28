@@ -17,7 +17,7 @@ spec:
         component: spark-worker
     spec:
       containers:
-      - image: myspark
+      - image: gnut3ll4/ttauveron-spark
         name: spark-worker
         ports:
         - containerPort: 8081
@@ -30,4 +30,3 @@ spec:
             cpu: "100m"
             memory: "256Mi"
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]
-        imagePullPolicy: Never

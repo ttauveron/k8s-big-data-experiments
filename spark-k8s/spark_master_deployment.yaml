@@ -40,7 +40,7 @@ spec:
         component: spark-master
     spec:
       containers:
-      - image: myspark
+      - image: gnut3ll4/ttauveron-spark
         name: spark-master
         env:
         - name: AWS_ACCESS_KEY
@@ -60,4 +60,3 @@ spec:
           name: sparkui
         command: [ "/entrypoint.sh" ]
         args: ["/start.sh"]
-        imagePullPolicy: Never
