@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Pod
+name: rss-site
+  labels:
+    app: web
+---
+apiVersion: v1
+kind: Pod
