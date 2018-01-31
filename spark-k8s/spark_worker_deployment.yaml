@@ -24,9 +24,9 @@ spec:
           name: spark
         resources:
           requests:
-            cpu: "100m"
-            memory: "256Mi"
+            cpu: "150m"
+            memory: "512Mi"
           limits:
-            cpu: "100m"
-            memory: "256Mi"
+            cpu: "150m"
+            memory: "512Mi"
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]

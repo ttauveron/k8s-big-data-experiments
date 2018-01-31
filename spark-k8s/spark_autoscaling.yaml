@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: spark-worker
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 100
   metrics:
   - type: Resource
     resource:
