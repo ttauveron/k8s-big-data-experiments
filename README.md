@@ -1,16 +1,28 @@
 # Spark on Kubernetes
 
+_Note : This following step is not required anymore as the Spark docker image is available on dockerhub and pulled automatically_
+
 Download spark-2.2.1-bin-hadoop2.7.tgz and put the tgz in the current directory
+
 https://spark.apache.org/downloads.html
 
 ```shell
 eval $(minikube docker-env)
 pushd docker/spark
 docker build -t myspark .
-kubectl create secret generic aws --from-literal=accesskey=YOUR_ACCESS_KEY --from-literal=secretkey=YOUR_SECRET_KEY
 popd
+
+```
+
+Then, launch the Spark cluster creation
+
+``` shell
+kubectl create secret generic aws \
+    --from-literal=accesskey=$(aws configure get aws_access_key_id) \
+    --from-literal=secretkey=$(aws configure get aws_secret_access_key)
 kubectl create -f spark-k8s
 ```
+
 
 # Livy REST API Testing
 
