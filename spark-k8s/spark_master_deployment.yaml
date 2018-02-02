@@ -18,6 +18,9 @@ spec:
     - port: 6066
       name: livy-rest
       nodePort: 30066
+    - port: 4040
+      name: job-ui
+      nodePort: 30040
   selector:
     component: spark-master
   type: NodePort
