@@ -35,5 +35,7 @@ RUN unzip /opt/livy-${LIVY_RELEASE}-bin.zip -d /opt && \
 ADD livy.conf /opt/livy/conf/livy.conf
 ADD start.sh /start.sh
 
+ENV PATH="/opt/spark/bin:${PATH}"
+
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/start.sh"]
