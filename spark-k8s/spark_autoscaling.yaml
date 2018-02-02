@@ -8,10 +8,14 @@ spec:
     apiVersion: apps/v1beta1
     kind: Deployment
     name: spark-worker
-  minReplicas: 1
+  minReplicas: 3
   maxReplicas: 100
   metrics:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 10
+      targetAverageUtilization: 40
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 20
