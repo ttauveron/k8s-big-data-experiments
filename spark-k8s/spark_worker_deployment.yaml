@@ -5,7 +5,7 @@ metadata:
   labels:
     component: spark-worker
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       component: spark-worker
@@ -24,9 +24,9 @@ spec:
           name: spark
         resources:
           requests:
-            cpu: "150m"
+            cpu: "200m"
             memory: "512Mi"
           limits:
-            cpu: "150m"
+            cpu: "200m"
             memory: "512Mi"
         command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]
