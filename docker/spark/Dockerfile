@@ -21,9 +21,6 @@ RUN ln -s /opt/spark* /opt/spark && \
 
 ENV SPARK_HOME=/opt/spark
 
-ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
-ADD entrypoint.sh /entrypoint.sh
-
 RUN wget -P /opt http://mirror.its.dal.ca/apache/incubator/livy/${LIVY_RELEASE}/livy-${LIVY_RELEASE}-bin.zip
 
 RUN unzip /opt/livy-${LIVY_RELEASE}-bin.zip -d /opt && \
@@ -31,9 +28,13 @@ RUN unzip /opt/livy-${LIVY_RELEASE}-bin.zip -d /opt && \
     ln -sf /opt/livy-${LIVY_RELEASE}-bin /opt/livy && \
     mkdir /opt/livy/logs
 
-
+ADD entrypoint.sh /entrypoint.sh
+ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ADD livy.conf /opt/livy/conf/livy.conf
-ADD start.sh /start.sh
+ADD start-common.sh /start-common.sh
+ADD start-master.sh /start-master.sh
+ADD start-worker.sh /start-worker.sh
+ADD spark-env.sh /opt/spark/conf/spark-env.sh
 
 ENV PATH="/opt/spark/bin:${PATH}"
 

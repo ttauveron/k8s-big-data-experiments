@@ -17,16 +17,18 @@ spec:
         component: spark-worker
     spec:
       containers:
-      - image: gnut3ll4/ttauveron-spark
+      - image: gnut3ll4/ttauveron-spark:latest
         name: spark-worker
         ports:
         - containerPort: 8081
           name: spark
+        - containerPort: 7078
+          protocol: TCP
         resources:
           requests:
-            cpu: "200m"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "1024Mi"
           limits:
             cpu: "200m"
-            memory: "512Mi"
-        command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark:7077"]
+            memory: "2048Mi"
+        command: ["/start-worker.sh"]
