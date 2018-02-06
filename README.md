@@ -68,3 +68,7 @@ curl -X GET http://192.168.99.100:30998/sessions/0/statements
 ```shell
 curl -X GET http://192.168.99.100:30998/sessions/0/statements/0
 ```
+
+# Zeppelin Notebooks
+
+[Zeppelin](https://zeppelin.apache.org/) is an interface to execute code in the Spark cluster. You can access it at [http://192.168.99.100:30111](http://192.168.99.100:30111).
