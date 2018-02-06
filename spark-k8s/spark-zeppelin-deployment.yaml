@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-zeppelin
+  labels:
+    component: spark-zeppelin
+spec:
+  ports:
+    - name: http-spark
+      nodePort: 30111
+      port: 8080
+  selector:
+    component: spark-zeppelin
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spark-zeppelin
+  labels:
+    component: spark-zeppelin
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: spark-zeppelin
+  template:
+    metadata:
+      labels:
+        component: spark-zeppelin
+    spec:
+      containers:
+        - name: spark-zeppelin
+          image: apache/zeppelin:0.7.3
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              cpu: 100m
+          env:
+            - name: SPARK_MASTER
+              value: "spark://spark-master:7077"
