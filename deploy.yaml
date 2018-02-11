@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: greeter
+spec:
+  containers:
+    - name: greeter
+      image: rytis6lod/greeter-test
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: userdb
+spec:
+  containers:
+    - name: userdb
+      image: rytis6lod/userdb-test
+      ports:
+        - containerPort: 12679
