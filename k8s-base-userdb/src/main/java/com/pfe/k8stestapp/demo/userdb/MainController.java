@@ -1,11 +1,14 @@
 package com.pfe.k8stestapp.demo.userdb;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.applet.Main;
 
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -33,9 +36,14 @@ public class MainController {
     @GetMapping(path="/get")
     public @ResponseBody User getUser(@RequestParam String name)
     {
-        Optional<User> user = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                                           .filter(u -> u.getName().equals(name))
-                                           .findFirst();
+        Optional<User> user = Optional.empty();
+        try {
+            user = StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                    .filter(u -> u.getName().equals(name))
+                    .findFirst();
+        } catch (Exception e) {
+            return new User();
+        }
 
         if(user.isPresent())
             return user.get();
@@ -47,5 +55,18 @@ public class MainController {
     public @ResponseBody Iterable<User> getAllUsers() {
         // This returns a JSON or XML with the users
         return userRepository.findAll();
+    }
+
+    @RequestMapping("/health")
+    public ResponseEntity<MainController> health()
+    {
+       try {
+            userRepository.count();
+        } catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

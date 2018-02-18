@@ -8,6 +8,8 @@ import com.pfe.k8stestapp.demo.userdb.User;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,17 +27,9 @@ public class GreetingController {
         if(!name.equals("World"))
         {
             RestTemplate restTemplate = new RestTemplate();
-            Resource resource = new ClassPathResource("/application.properties");
-            Properties prop = null;
-
-            try {
-                prop = PropertiesLoaderUtils.loadProperties(resource);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+            Properties prop = getProperties();
 
             User user = restTemplate.getForObject(prop.getProperty("k8stestapp.userdb.url") + ":" + prop.getProperty("k8stestapp.userdb.port") + "/demo/get?name=" + name, User.class);
-
 
             if(user.getName() != null)
                 return new Greeting(counter.incrementAndGet(), String.format(template, name) + ": " + user.getEmail());
@@ -44,5 +38,34 @@ public class GreetingController {
         }
         else
             return new Greeting(counter.incrementAndGet(), String.format(template, name));
+    }
+
+
+    @RequestMapping("/health")
+    public ResponseEntity<GreetingController> health()
+    {
+        RestTemplate restTemplate = new RestTemplate();
+        Properties prop = getProperties();
+
+        User user = restTemplate.getForObject(prop.getProperty("k8stestapp.userdb.url") + ":" + prop.getProperty("k8stestapp.userdb.port") + "/demo/get?name=World", User.class);
+
+        if(user == null)
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    private Properties getProperties()
+    {
+        Resource resource = new ClassPathResource("/application.properties");
+        Properties prop = null;
+
+        try {
+            prop = PropertiesLoaderUtils.loadProperties(resource);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return prop;
     }
 }
