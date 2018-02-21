@@ -23,6 +23,31 @@ kubectl create secret generic aws \
 kubectl create -f spark-k8s
 ```
 
+# Use Kubernetes scheduler with Spark's Kubernetes capabilities
+
+First, download the 2.3 version of the spark repo
+
+``` shell
+wget https://github.com/apache/spark/archive/v2.3.0-rc4.tar.gz
+tar xzf v2.3.0-rc4.tar.gz
+cd spark-2.3.0-rc4/
+
+# Building Spark
+./dev/make-distribution.sh --name custom-spark --tgz -Psparkr -Phadoop-2.7 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes
+
+```
+
+``` shell
+# Build docker spark image and push it to dockerhub
+bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 build
+bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 push
+
+kubectl proxy --port=8443&
+
+# Submit a job to the kubernetes cluster
+bin/spark-submit --master k8s://http://127.0.0.1:8443 --deploy-mode cluster --name spark-pi --class org.apache.spark.examples.SparkPi --conf spark.executor.instances=5 --conf spark.kubernetes.container.image=gnut3ll4/spark:v1.0.2 local:///opt/spark/examples/target/original-spark-examples_2.11-2.3.0.jar
+```
+
 
 # Livy REST API Testing
 
