@@ -27,9 +27,7 @@ public class GreetingController {
         if(!name.equals("World"))
         {
             RestTemplate restTemplate = new RestTemplate();
-            Properties prop = getProperties();
-
-            User user = restTemplate.getForObject(prop.getProperty("k8stestapp.userdb.url") + ":" + prop.getProperty("k8stestapp.userdb.port") + "/demo/get?name=" + name, User.class);
+            User user = restTemplate.getForObject(getUserDbUrl(name), User.class);
 
             if(user.getName() != null)
                 return new Greeting(counter.incrementAndGet(), String.format(template, name) + ": " + user.getEmail());
@@ -45,14 +43,25 @@ public class GreetingController {
     public ResponseEntity<GreetingController> health()
     {
         RestTemplate restTemplate = new RestTemplate();
-        Properties prop = getProperties();
-
-        User user = restTemplate.getForObject(prop.getProperty("k8stestapp.userdb.url") + ":" + prop.getProperty("k8stestapp.userdb.port") + "/demo/get?name=World", User.class);
+        User user = restTemplate.getForObject(getUserDbUrl("World"), User.class);
 
         if(user == null)
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(null);
         else
             return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @RequestMapping("/ping")
+    public ResponseEntity<GreetingController> ping()
+    {
+        return ResponseEntity.ok(null);
+    }
+
+    private String getUserDbUrl(String name)
+    {
+        Properties prop = getProperties();
+
+        return prop.getProperty("k8stestapp.userdb.url") + ":" + prop.getProperty("k8stestapp.userdb.port") + "/demo/get?name=" + name;
     }
 
     private Properties getProperties()

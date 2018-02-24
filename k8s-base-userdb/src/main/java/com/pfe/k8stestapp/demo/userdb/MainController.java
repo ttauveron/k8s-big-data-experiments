@@ -69,4 +69,10 @@ public class MainController {
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    @RequestMapping("/ping")
+    public ResponseEntity<MainController> ping()
+    {
+        return ResponseEntity.ok(null);
+    }
 }
