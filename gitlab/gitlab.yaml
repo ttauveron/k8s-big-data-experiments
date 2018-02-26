@@ -41,8 +41,8 @@ spec:
           hostPath:
             path: "/srv/gitlab/logs"
         - name: "data"
-          hostPath:
-            path: "/srv/gitlab/data"
+          persistentVolumeClaim:
+            claimName: mypvc
       containers:
       - image: gitlab/gitlab-ce:latest
         name: gitlab
