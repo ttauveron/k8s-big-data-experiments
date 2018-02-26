@@ -41,8 +41,12 @@ spec:
           hostPath:
             path: "/srv/gitlab/logs"
         - name: "data"
-          persistentVolumeClaim:
-            claimName: mypvc
+#          persistentVolumeClaim:
+#            claimName: mypvc
+          azureDisk:
+            diskName: kubernetes-dynamic-pvc-35babe83-1aaa-11e8-87b3-0a58ac1f09a5
+            diskURI: "/subscriptions/d2b01e5b-40c2-4e21-b2e6-5f0a06324355/resourceGroups/MC_spark-k8s_test-kubernetes_centralus/providers/Microsoft.Compute/disks/kubernetes-dynamic-pvc-35babe83-1aaa-11e8-87b3-0a58ac1f09a5"
+            kind: Managed
       containers:
       - image: gitlab/gitlab-ce:latest
         name: gitlab
