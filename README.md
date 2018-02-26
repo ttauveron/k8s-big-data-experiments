@@ -4,7 +4,7 @@ Follow instructions in that repo :
 https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus
 
 # Azure file
-Note : It doesn't work with gitlab as a volume because gitlab wants to change permissions and it's apparently not possible with storage account. Use a Azurte Disk instead.
+Note : It doesn't work with gitlab as a volume because gitlab wants to change permissions and it's apparently not possible with storage account. Use a Azure Disk instead.
 
 ## Setup storage class
 
