@@ -3,14 +3,17 @@
 Follow instructions in that repo :
 https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus
 
-# Setup storage class
+# Azure file
+Note : It doesn't work with gitlab as a volume because gitlab wants to change permissions and it's apparently not possible with storage account. 
+
+## Setup storage class
 
 Create a storage account on Azure named, say, testttauveron
 Ref : https://docs.microsoft.com/en-us/azure/storage/blobs/storage-how-to-use-blobs-cli
 
 It must use the same resource-group than AKS-agentpool in Azure
 
-# Reusing Azure volume
+## Reusing Azure volume
 
 To reuse the volume storageclass has created, for example, if we have deleted the pvc, we have to delete first the pv with kubectl.
 The volume is still available in Storage account on Azure.
