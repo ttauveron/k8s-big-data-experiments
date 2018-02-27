@@ -33,7 +33,7 @@ tar xzf v2.3.0-rc4.tar.gz
 cd spark-2.3.0-rc4/
 
 # Building Spark
-./dev/make-distribution.sh --name custom-spark --tgz -Psparkr -Phadoop-2.7 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes
+./dev/make-distribution.sh --name custom-spark --tgz -Phadoop-2.7 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes
 
 ```
 
