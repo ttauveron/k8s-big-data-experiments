@@ -1,13 +1,13 @@
 {
 	"info": {
 		"name": "Livy REST API",
-		"_postman_id": "c3d4808b-307b-8b60-ddf1-c56d5b45a2b8",
+		"_postman_id": "41b1c29a-eee4-4c78-525e-55956f0ed487",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "1. Create session",
+			"name": "1.1. Create session",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -21,71 +21,65 @@
 					"raw": "{\n\t\"kind\": \"spark\"\n}"
 				},
 				"url": {
-					"raw": "192.168.99.100:30998/sessions",
+					"raw": "http://{{livy_host}}:8998/sessions",
+					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"99",
-						"100"
+						"{{livy_host}}"
 					],
-					"port": "30998",
+					"port": "8998",
 					"path": [
 						"sessions"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
 		{
-			"name": "2. List Sessions",
+			"name": "1.2. List Sessions",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "192.168.99.100:30998/sessions",
+					"raw": "http://{{livy_host}}:8998/sessions",
+					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"99",
-						"100"
+						"{{livy_host}}"
 					],
-					"port": "30998",
+					"port": "8998",
 					"path": [
 						"sessions"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
 		{
-			"name": "3. Get Session",
+			"name": "1.3. Get Session",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "192.168.99.100:30998/sessions/0",
+					"raw": "http://{{livy_host}}:8998/sessions/0",
+					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"99",
-						"100"
+						"{{livy_host}}"
 					],
-					"port": "30998",
+					"port": "8998",
 					"path": [
 						"sessions",
 						"0"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
 		{
-			"name": "4. Create statement in a session",
+			"name": "1.4. Create statement in a session",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -99,14 +93,12 @@
 					"raw": "{\"code\": \" val NUM_SAMPLES = 100000; \\n     val count = sc.parallelize(1 to NUM_SAMPLES).map { i => \\n       val x = Math.random(); \\n       val y = Math.random(); \\n       if (x*x + y*y < 1) 1 else 0\\n     }.reduce(_ + _);\\n     println(\\\"Pi is roughly \\\" + 4.0 * count / NUM_SAMPLES)\"}"
 				},
 				"url": {
-					"raw": "192.168.99.100:30998/sessions/0/statements",
+					"raw": "http://{{livy_host}}:8998/sessions/0/statements",
+					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"99",
-						"100"
+						"{{livy_host}}"
 					],
-					"port": "30998",
+					"port": "8998",
 					"path": [
 						"sessions",
 						"0",
@@ -118,45 +110,41 @@
 			"response": []
 		},
 		{
-			"name": "5. List statements of a session",
+			"name": "1.5. List statements of a session",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "192.168.99.100:30998/sessions/0/statements",
+					"raw": "http://{{livy_host}}:8998/sessions/0/statements",
+					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"99",
-						"100"
+						"{{livy_host}}"
 					],
-					"port": "30998",
+					"port": "8998",
 					"path": [
 						"sessions",
 						"0",
 						"statements"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
 		{
-			"name": "6. Get result of statement",
+			"name": "1.6. Get result of statement",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "192.168.99.100:30998/sessions/0/statements/0",
+					"raw": "http://{{livy_host}}:8998/sessions/0/statements/0",
+					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"99",
-						"100"
+						"{{livy_host}}"
 					],
-					"port": "30998",
+					"port": "8998",
 					"path": [
 						"sessions",
 						"0",
@@ -164,9 +152,120 @@
 						"0"
 					]
 				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "2.1 Batch - Submit jar",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"file\": \"https://ticksmith-ttauveron.s3.amazonaws.com/original-spark-examples_2.11-2.3.0.jar\", \n\t\"className\": \"org.apache.spark.examples.SparkPi\",\n\t\"numExecutors\":5,\n\t\"conf\": {\n\t\t\t\t\"spark.kubernetes.container.image\": \"gnut3ll4/spark:v1.0.2\"\n\t}\n\t\n}"
+				},
+				"url": {
+					"raw": "http://{{livy_host}}:8998/batches",
+					"protocol": "http",
+					"host": [
+						"{{livy_host}}"
+					],
+					"port": "8998",
+					"path": [
+						"batches"
+					]
+				},
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "2.2 Get Batch",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{livy_host}}:8998/batches/0",
+					"protocol": "http",
+					"host": [
+						"{{livy_host}}"
+					],
+					"port": "8998",
+					"path": [
+						"batches",
+						"0"
+					]
+				},
+				"description": "Returns all the active batch sessions."
+			},
+			"response": []
+		},
+		{
+			"name": "2.3 Get Batch Log",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://{{livy_host}}:8998/batches/:session_id/log",
+					"protocol": "http",
+					"host": [
+						"{{livy_host}}"
+					],
+					"port": "8998",
+					"path": [
+						"batches",
+						":session_id",
+						"log"
+					],
+					"variable": [
+						{
+							"key": "session_id",
+							"value": "0"
+						}
+					]
+				},
+				"description": "Gets the log lines from this batch."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6026649f-2757-49f7-a01f-33a6649b4642",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5d2ecaaf-d0dc-408a-92e0-b0c044896558",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e2670067-3edf-4506-bf92-422fe0926d38",
+			"key": "livy_host",
+			"value": "52.165.180.232",
+			"type": "text",
+			"description": ""
 		}
 	]
 }
