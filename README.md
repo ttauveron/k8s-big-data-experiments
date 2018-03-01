@@ -42,7 +42,7 @@ cd spark-2.3.0-rc4/
 bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 build
 bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 push
 
-kubectl proxy --port=8443&
+kubectl proxy --address 0.0.0.0 --port=8443 --accept-hosts ".*"&
 
 # Submit a job to the kubernetes cluster
 bin/spark-submit --master k8s://http://127.0.0.1:8443 --deploy-mode cluster --name spark-pi --class org.apache.spark.examples.SparkPi --conf spark.executor.instances=5 --conf spark.kubernetes.container.image=gnut3ll4/spark:v1.0.2 local:///opt/spark/examples/target/original-spark-examples_2.11-2.3.0.jar
