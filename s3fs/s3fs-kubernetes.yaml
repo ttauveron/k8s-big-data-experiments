@@ -14,8 +14,6 @@ spec:
         image: gnut3ll4/s3fsweb:latest
         securityContext:
           privileged: true
-        ports:
-        - containerPort: 22
         env:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
