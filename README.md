@@ -37,6 +37,15 @@ cd spark-2.3.0-rc4/
 
 ```
 
+Before building the docker container, add the following lines to **resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile**
+
+```Dockerfile
+RUN mkdir -p /opt/spark/extras && \
+    wget http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.7.4/aws-java-sdk-1.7.4.jar -P /opt/spark/extras && \
+    wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar -P /opt/spark/extras
+```
+
+
 ``` shell
 # Build docker spark image and push it to dockerhub
 bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 build
