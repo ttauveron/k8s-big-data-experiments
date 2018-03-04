@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: s3fs-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: s3fs-app
+    spec:
+      containers:
+      - name: s3fs-app
+        image: gnut3ll4/s3fsweb:latest
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 22
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws
+              key: accesskey
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws
+              key: secretkey
+        - name: S3_BUCKET
+          value: pfe-ttauveron
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3fs
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    k8s-app: s3fs-app

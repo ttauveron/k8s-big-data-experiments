@@ -180,7 +180,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"file\": \"https://s3.amazonaws.com/pfe-ttauveron/test-scala-1.0-SNAPSHOT-jar-with-dependencies.jar\", \n\t\"className\": \"ttauveron.SparkWordCount\",\n\t\"numExecutors\":5,\n\t\"name\": \"spark-s3wordcount\"\n}"
+					"raw": "{\n\t\"file\": \"http://s3fs/test-scala-1.0-SNAPSHOT-jar-with-dependencies.jar\", \n\t\"className\": \"ttauveron.SparkWordCount\",\n\t\"numExecutors\":5,\n\t\"name\": \"spark-s3wordcount\"\n}"
 				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/batches",
@@ -279,7 +279,7 @@
 	],
 	"variable": [
 		{
-			"id": "eba35df2-1622-4869-b710-5fe9ba7c8d1c",
+			"id": "665e79d6-8224-475f-a731-64ef0c52a502",
 			"key": "livy_host",
 			"value": "52.176.165.244",
 			"type": "text",
