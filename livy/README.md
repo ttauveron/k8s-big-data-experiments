@@ -3,7 +3,7 @@
 This package aims at using livy on top of spark 2.3 (using the kubernetes scheduler).
 
 The livy Dockerfile adds a spark-2.3.0-bin-custom-spark.tgz to the Docker container.
-I didn't include this file is the repo (200MB) but it is produced from the spark 2.3 build, so add it in the folder before running a docker build.
+I didn't include this file in the repo (200MB) but it is produced from the spark 2.3 build, so add it in the folder before running a docker build.
 
 (For how to build Spark 2.3, see https://github.com/ttauveron/spark_k8s#use-kubernetes-scheduler-with-sparks-kubernetes-capabilities)
 
@@ -23,6 +23,14 @@ I uploaded some images on my dockerhub account, so the solution can be deployed 
 
 ``` shell
 kubectl apply -f livy-deployment.yaml
+```
+
+Then, you may want to add a s3fs pod. 
+This pod aims at mounting a s3 bucket and serving it internally by http (in kubernetes cluster).
+It allows to access spark programs executables from s3 through http without making them public.
+
+```shell
+kubectl apply -f ../s3fs/s3fs-kubernetes.yaml
 ```
 
 ## Postman Collection
