@@ -35,6 +35,18 @@ spec:
         env:
         - name: K8S_API_HOST
           value: localhost
+        - name: SPARK_KUBERNETES_IMAGE
+          value: "gnut3ll4/spark:v1.0.8"
+        - name: AWS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws
+              key: accesskey
+        - name: AWS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws
+              key: secretkey
         ports:
         - containerPort: 8998
           name: livy-rest

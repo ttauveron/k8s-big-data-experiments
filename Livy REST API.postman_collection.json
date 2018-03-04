@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "Livy REST API",
-		"_postman_id": "41b1c29a-eee4-4c78-525e-55956f0ed487",
+		"_postman_id": "d683546e-b361-4e01-a97c-7d34d853fcb9",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -40,7 +40,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/sessions",
 					"protocol": "http",
@@ -61,7 +64,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/sessions/0",
 					"protocol": "http",
@@ -114,7 +120,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/sessions/0/statements",
 					"protocol": "http",
@@ -137,7 +146,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/sessions/0/statements/0",
 					"protocol": "http",
@@ -168,7 +180,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"file\": \"https://ticksmith-ttauveron.s3.amazonaws.com/original-spark-examples_2.11-2.3.0.jar\", \n\t\"className\": \"org.apache.spark.examples.SparkPi\",\n\t\"numExecutors\":5,\n\t\"conf\": {\n\t\t\t\t\"spark.kubernetes.container.image\": \"gnut3ll4/spark:v1.0.2\"\n\t}\n\t\n}"
+					"raw": "{\n\t\"file\": \"https://s3.amazonaws.com/pfe-ttauveron/test-scala-1.0-SNAPSHOT-jar-with-dependencies.jar\", \n\t\"className\": \"ttauveron.SparkWordCount\",\n\t\"numExecutors\":5,\n\t\"name\": \"spark-s3wordcount\"\n}"
 				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/batches",
@@ -181,7 +193,7 @@
 						"batches"
 					]
 				},
-				"description": ""
+				"description": null
 			},
 			"response": []
 		},
@@ -190,7 +202,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/batches/0",
 					"protocol": "http",
@@ -212,7 +227,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://{{livy_host}}:8998/batches/:session_id/log",
 					"protocol": "http",
@@ -261,9 +279,9 @@
 	],
 	"variable": [
 		{
-			"id": "e2670067-3edf-4506-bf92-422fe0926d38",
+			"id": "eba35df2-1622-4869-b710-5fe9ba7c8d1c",
 			"key": "livy_host",
-			"value": "52.165.180.232",
+			"value": "52.176.165.244",
 			"type": "text",
 			"description": ""
 		}
