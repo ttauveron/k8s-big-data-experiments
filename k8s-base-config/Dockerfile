@@ -6,4 +6,4 @@ COPY entrypoint.sh /entrypoint.sh
 EXPOSE 8888/tcp
 
 ENTRYPOINT ["/entrypoint.sh"]
-RUN ["java", "-jar", "/app.jar"]
+CMD ["java", "-jar", "/app.jar"]
