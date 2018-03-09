@@ -1,27 +1,33 @@
-FROM java:8
+FROM java:8-alpine
+
+ENV SPARK_HOME=/opt/spark
+ENV LIVY_HOME=/opt/livy
+ENV HADOOP_CONF_DIR=/etc/hadoop/conf
+ENV SPARK_USER=ticksmith
 
 ARG AWS_JAVA_SDK_VERSION=1.7.4
 ARG HADOOP_AWS_VERSION=2.7.3
 
-ADD spark-2.3.0-bin-custom-spark.tgz /opt
+RUN apk add --update openssl wget bash && \
+    wget -P /opt https://www.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-hadoop2.7.tgz && \
+    cd /opt && \
+    tar xvzf spark-2.3.0-bin-hadoop2.7.tgz && \
+    rm spark-2.3.0-bin-hadoop2.7.tgz && \
+    ln -s /opt/spark-2.3.0-bin-hadoop2.7 /opt/spark && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar && \
+    wget http://mirror.its.dal.ca/apache/incubator/livy/0.5.0-incubating/livy-0.5.0-incubating-bin.zip && \
+    unzip livy-0.5.0-incubating-bin.zip && \
+    rm livy-0.5.0-incubating-bin.zip && \
+    ln -s /opt/livy-0.5.0-incubating-bin /opt/livy && \
+    mkdir /var/log/livy && \
+    ln -s /var/log/livy /opt/livy/logs && \
+    cp /opt/livy/conf/log4j.properties.template /opt/livy/conf/log4j.properties
 
-ENV SPARK_HOME=/opt/spark-2.3.0-bin-custom-spark
+EXPOSE 8998
 
-RUN wget http://archive.apache.org/dist/incubator/livy/0.5.0-incubating/livy-0.5.0-incubating-bin.zip -P /opt && \
-    unzip /opt/livy-0.5.0-incubating-bin.zip -d /opt && \
-    rm /opt/livy-0.5.0-incubating-bin.zip && \
-    mkdir /opt/livy-0.5.0-incubating-bin/logs
 
-RUN ln -s /opt/spark* /opt/spark && \
-    ln -s /opt/livy* /opt/livy
-
-RUN mkdir -p /opt/spark/extras && \
-    wget http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar -P /opt/spark/extras && \
-    wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar -P /opt/spark/extras
-
-EXPOSE 8998 8080 6066 7077
-
-ADD livy.conf /opt/livy-0.5.0-incubating-bin/conf
+ADD livy.conf /opt/livy/conf
 ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ADD entrypoint.sh /entrypoint.sh
 

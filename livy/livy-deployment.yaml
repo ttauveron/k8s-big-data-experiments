@@ -36,7 +36,7 @@ spec:
         - name: K8S_API_HOST
           value: localhost
         - name: SPARK_KUBERNETES_IMAGE
-          value: "gnut3ll4/spark:v1.0.8"
+          value: "gnut3ll4/spark:v1.0.9"
         - name: AWS_ACCESS_KEY
           valueFrom:
             secretKeyRef:
