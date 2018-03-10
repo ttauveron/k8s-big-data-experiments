@@ -11,7 +11,7 @@ spec:
     protocol: TCP
   selector:
     run: greeter
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -78,7 +78,7 @@ spec:
           httpGet:
             path: /ping
             port: 8080
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           periodSeconds: 5
 ---
 apiVersion: apps/v1beta2
@@ -116,7 +116,7 @@ spec:
           httpGet:
             path: /demo/ping
             port: 12679
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           periodSeconds: 5
 ---
 apiVersion: apps/v1beta2

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.pfe.k8stestapp.demo.greeter.Greeting;
 import com.pfe.k8stestapp.demo.userdb.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -20,6 +21,11 @@ public class GreetingController {
 
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
+
+    @Value("${k8stestapp.userdb.url}")
+    private String userDBUrl;
+    @Value("${k8stestapp.userdb.port}")
+    private String userDBPort;
 
     @RequestMapping("/greeting")
     public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
@@ -59,22 +65,6 @@ public class GreetingController {
 
     private String getUserDbUrl(String name)
     {
-        Properties prop = getProperties();
-
-        return prop.getProperty("k8stestapp.userdb.url") + ":" + prop.getProperty("k8stestapp.userdb.port") + "/demo/get?name=" + name;
-    }
-
-    private Properties getProperties()
-    {
-        Resource resource = new ClassPathResource("/application.properties");
-        Properties prop = null;
-
-        try {
-            prop = PropertiesLoaderUtils.loadProperties(resource);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return prop;
+        return userDBUrl + ":" + userDBPort + "/demo/get?name=" + name;
     }
 }
