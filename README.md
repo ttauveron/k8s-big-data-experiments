@@ -1,8 +1,7 @@
-#Spring Boot Kubernetes Proof of Concept
+# Spring Boot Kubernetes Proof of Concept
 ![Spring Boot Diagram](./Spring_Boot_Diagram.png "Spring Boot Diagram")
 
 # Usage
----
 ### Deploying
 `kubectl run -f deploy.yaml`
 
@@ -12,10 +11,11 @@ Once the applications are up, you can use `kubectl get svc` to find the IP of th
 
 ### Endpoints
 #### Greeter (port 8080)
----
 ##### GET /greeting?:name
 Returns "Hello, <NAME>" if the name is not found in the DB or is equal to "World", otherwise returns "Hello, <NAME>: <EMAIL>" with the email that was associated with the name in the DB. An ID is also returned, indicating how many requests were previously served on this server.
+
 **Parameters:**
+
 name: Optional. The name that will be checked against the database. The default value is "World".
     
 ##### GET /health
@@ -23,12 +23,13 @@ Used by the readiness probe. Returns a 200 OK only if the UserDB component can b
 
 ##### GET /ping
 Used by the liveness probe. Simply returns a 200 OK.
-
-#### UserDB (port 12679)
 ---
+#### UserDB (port 12679)
 ##### GET /demo/get?:name
 Returns the User object that has the given name. If the user is not found, a new user without an email is returned.
+
 **Parameters:**
+
 name: Required. The name that will be checked against the database.
 
 ##### GET /health
@@ -38,7 +39,6 @@ Used by the readiness probe. Returns a 200 OK only if the DB can be reached.
 Used by the liveness probe. Simply returns a 200 OK.
 
 # Setup
----
 If you are merely deploying the application, you only need to make sure the DB is setup and that the Kubernetes secrets have been generated. 
 
 If you want to make changes to the application, you will probably need to create new jars and to upload the images to Docker Hub.
@@ -46,7 +46,6 @@ If you want to make changes to the application, you will probably need to create
 Note: Make sure the DB is running before executing `kubectl run -f deploy.yaml`.
 
 ### Creating JARs
----
 In every subfolder, run `./mvnw clean package.` The jar will be then be found in the `target` folder.
 
 ### Updating Docker images
@@ -61,7 +60,6 @@ Note: If you're not currently logged in, you may need to run `docker login` befo
 
 
 ### DB Setup
----
 ```sql
 create database <INSERT DB NAME>;
 create user '<INSERT USERNAME HERE>' identified by '<INSERT PASSWORD HERE>';
@@ -75,7 +73,6 @@ Once this is done, you need to run the userdb application to create the schema. 
 Then, use your favorite DB management tool to add users to the DB.
 
 ### Generating Secrets
----
 `kubectl create secret generic db --from-literal=url=<INSERT DB URL HERE> --from-literal=username=<INSERT USERNAME HERE> --from-literal=password=<INSERT PASSWORD HERE>`
 
 Note: The DB url must be in a format that Spring supports. For example: `jdbc:mysql://127.0.0.1:3306/my_db_name`.
