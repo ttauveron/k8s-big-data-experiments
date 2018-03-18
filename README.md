@@ -47,7 +47,7 @@ If you want to make changes to the application, you will probably need to create
 Note: Make sure the DB is running before executing `kubectl run -f deploy.yaml`.
 
 ### Creating JARs
-In every subfolder, run `./mvnw clean package.` The jar will be then be found in the `target` folder.
+In every subfolder, run `./mvnw clean package`. The jar will be then be found in the `target` folder.
 
 ### Updating Docker images
 Once the JARs have been updated, in every subfolder, do:
