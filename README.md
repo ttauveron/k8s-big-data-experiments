@@ -23,12 +23,13 @@ Used by the readiness probe. Returns a 200 OK only if the UserDB component can b
 
 ##### GET /ping
 Used by the liveness probe. Simply returns a 200 OK.
+
 ---
 #### UserDB (port 12679)
 ##### GET /demo/get?:name
 Returns the User object that has the given name. If the user is not found, a new user without an email is returned.
 
-**Parameters:**
+Parameters:
 
 name: Required. The name that will be checked against the database.
 
