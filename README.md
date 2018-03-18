@@ -52,7 +52,8 @@ In every subfolder, run `./mvnw clean package.` The jar will be then be found in
 ### Updating Docker images
 Once the JARs have been updated, in every subfolder, do:
 
-```docker build --tag {config-test|userdb-test|greeter-test} .
+```
+docker build --tag {config-test|userdb-test|greeter-test} .
 docker tag {config-test|userdb-test|greeter-test} rytis6lod/{config-test|userdb-test|greeter-test}
 docker push rytis6lod/{config-test|userdb-test|greeter-test}
 ```
