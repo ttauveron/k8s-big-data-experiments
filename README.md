@@ -20,6 +20,11 @@ Then, launch the Spark cluster creation
 kubectl create secret generic aws \
     --from-literal=accesskey=$(aws configure get aws_access_key_id) \
     --from-literal=secretkey=$(aws configure get aws_secret_access_key)
+    
+kubectl create secret generic azure \
+    --from-literal=storageaccount=STORAGE_ACCOUNT_NAME \
+    --from-literal=storageaccesskey=STORAGE_ACCOUNT_ACCESS_KEY
+
 kubectl create -f spark-k8s
 ```
 
