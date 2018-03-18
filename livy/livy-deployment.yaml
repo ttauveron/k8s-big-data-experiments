@@ -36,7 +36,7 @@ spec:
         - name: K8S_API_HOST
           value: localhost
         - name: SPARK_KUBERNETES_IMAGE
-          value: "gnut3ll4/spark:v1.0.9"
+          value: "gnut3ll4/spark:v1.0.14"
         - name: AWS_ACCESS_KEY
           valueFrom:
             secretKeyRef:
@@ -47,6 +47,16 @@ spec:
             secretKeyRef:
               name: aws
               key: secretkey
+        - name: AZURE_STORAGE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: azure
+              key: storageaccount
+        - name: AZURE_STORAGE_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: azure
+              key: storageaccesskey
         ports:
         - containerPort: 8998
           name: livy-rest

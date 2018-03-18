@@ -8,15 +8,15 @@ ENV SPARK_USER=ticksmith
 ARG AWS_JAVA_SDK_VERSION=1.7.4
 ARG HADOOP_AWS_VERSION=2.7.3
 
+WORKDIR /opt
+
 RUN apk add --update openssl wget bash && \
     wget -P /opt https://www.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-hadoop2.7.tgz && \
-    cd /opt && \
     tar xvzf spark-2.3.0-bin-hadoop2.7.tgz && \
     rm spark-2.3.0-bin-hadoop2.7.tgz && \
-    ln -s /opt/spark-2.3.0-bin-hadoop2.7 /opt/spark && \
-    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar && \
-    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar && \
-    wget http://mirror.its.dal.ca/apache/incubator/livy/0.5.0-incubating/livy-0.5.0-incubating-bin.zip && \
+    ln -s /opt/spark-2.3.0-bin-hadoop2.7 /opt/spark
+
+RUN wget http://mirror.its.dal.ca/apache/incubator/livy/0.5.0-incubating/livy-0.5.0-incubating-bin.zip && \
     unzip livy-0.5.0-incubating-bin.zip && \
     rm livy-0.5.0-incubating-bin.zip && \
     ln -s /opt/livy-0.5.0-incubating-bin /opt/livy && \
@@ -24,13 +24,18 @@ RUN apk add --update openssl wget bash && \
     ln -s /var/log/livy /opt/livy/logs && \
     cp /opt/livy/conf/log4j.properties.template /opt/livy/conf/log4j.properties
 
+RUN wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_AWS_VERSION/hadoop-aws-$HADOOP_AWS_VERSION.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/$AWS_JAVA_SDK_VERSION/aws-java-sdk-$AWS_JAVA_SDK_VERSION.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/microsoft/azure/azure-storage/7.0.0/azure-storage-7.0.0.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-azure/2.7.5/hadoop-azure-2.7.5.jar
+    
+
 EXPOSE 8998
 
 
 ADD livy.conf /opt/livy/conf
 ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ADD entrypoint.sh /entrypoint.sh
-
 
 ENV PATH="/opt/livy/bin:${PATH}"
 

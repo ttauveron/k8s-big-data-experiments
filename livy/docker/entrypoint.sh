@@ -21,6 +21,12 @@ then
    sed -i -e "s~\${spark_kubernetes_image}~$SPARK_KUBERNETES_IMAGE~" \
        /opt/spark/conf/spark-defaults.conf
 fi
-     
+
+if [ "$AZURE_STORAGE_ACCOUNT" ] && [ "$AZURE_STORAGE_ACCESS_KEY" ]
+then
+    sed -i -e "s~\${azure_storage_account}~$AZURE_STORAGE_ACCOUNT~" \
+        -e "s~\${azure_storage_access_key}~$AZURE_STORAGE_ACCESS_KEY~" \
+        /opt/spark/conf/spark-defaults.conf
+fi
 
 exec "$@"
