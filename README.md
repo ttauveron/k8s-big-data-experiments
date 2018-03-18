@@ -20,29 +20,34 @@ Then, launch the Spark cluster creation
 kubectl create secret generic aws \
     --from-literal=accesskey=$(aws configure get aws_access_key_id) \
     --from-literal=secretkey=$(aws configure get aws_secret_access_key)
+    
+kubectl create secret generic azure \
+    --from-literal=storageaccount=STORAGE_ACCOUNT_NAME \
+    --from-literal=storageaccesskey=STORAGE_ACCOUNT_ACCESS_KEY
+
 kubectl create -f spark-k8s
 ```
 
 # Use Kubernetes scheduler with Spark's Kubernetes capabilities
 
-First, download the 2.3 version of the spark repo
+First, download Spark 2.3
 
 ``` shell
-wget https://github.com/apache/spark/archive/v2.3.0-rc4.tar.gz
-tar xzf v2.3.0-rc4.tar.gz
-cd spark-2.3.0-rc4/
-
-# Building Spark
-./dev/make-distribution.sh --name custom-spark --tgz -Phadoop-2.7 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes
-
+wget -P /opt https://www.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-hadoop2.7.tgz
+cd /opt
+tar xvzf spark-2.3.0-bin-hadoop2.7.tgz
+rm spark-2.3.0-bin-hadoop2.7.tgz
+cd spark-2.3.0-bin-hadoop2.7
 ```
 
-Before building the docker container, add the following lines to **resource-managers/kubernetes/docker/src/main/dockerfiles/spark/Dockerfile**
+Before building the docker container, add the following lines to **/opt/spark-2.3.0-bin-hadoop2.7/kubernetes/dockerfiles/spark/Dockerfile**
 
 ```Dockerfile
-RUN mkdir -p /opt/spark/extras && \
-    wget http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.7.4/aws-java-sdk-1.7.4.jar -P /opt/spark/extras && \
-    wget http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar -P /opt/spark/extras
+RUN wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.7.4/aws-java-sdk-1.7.4.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/microsoft/azure/azure-storage/7.0.0/azure-storage-7.0.0.jar && \
+    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-azure/2.7.5/hadoop-azure-2.7.5.jar
+
 ```
 
 
