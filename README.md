@@ -14,7 +14,7 @@ Once the applications are up, you can use `kubectl get svc` to find the IP of th
 ##### GET /greeting?:name
 Returns "Hello, <NAME>" if the name is not found in the DB or is equal to "World", otherwise returns "Hello, <NAME>: <EMAIL>" with the email that was associated with the name in the DB. An ID is also returned, indicating how many requests were previously served on this server.
 
-**Parameters:**
+Parameters:
 
 name: Optional. The name that will be checked against the database. The default value is "World".
     
