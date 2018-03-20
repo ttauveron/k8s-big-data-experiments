@@ -85,12 +85,12 @@ create() {
     #kubectl apply -f spark-k8s/cluster-autoscaler-deploy.yaml
 
     # Creating spark cluster
-    kubectl create secret generic aws \
-            --from-literal=accesskey=$(aws configure get aws_access_key_id) \
-            --from-literal=secretkey=$(aws configure get aws_secret_access_key)
-    kubectl create -f spark-k8s/
+#    kubectl create secret generic aws \
+#            --from-literal=accesskey=$(aws configure get aws_access_key_id) \
+#            --from-literal=secretkey=$(aws configure get aws_secret_access_key)
+#    kubectl create -f spark-k8s/
 
-    echo "Finished!"
+    echo "Kubernetes cluster creation on Amazon ec2 successful"
 
 }
 
