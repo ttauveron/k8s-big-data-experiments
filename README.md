@@ -157,3 +157,5 @@ az storage blob list --container-name mystoragecontainer \
 In [this other repo](https://github.com/ttauveron/k8s-dev), we are setuping a Gitlab platform which uses Azure storage to backup/mount the data folder.
 
 That means we can reuse the data volumes on Azure, for backup or migration purpose.
+
+We are also using a Kubernetes storage class. This is used to dynamically provision a volume in Kubernetes with a given cloud provider storage service.
