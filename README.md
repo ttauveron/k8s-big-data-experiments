@@ -92,6 +92,17 @@ Zeppelin notebooks are included in that repo.
 
 Unlike the Kubernetes features on Spark 2.3, you can use spark-shell as we deploy manually our Spark workers and drivers.
 
+#### Testing autoscaling
+
+```shell
+./bin/spark-submit --class org.apache.spark.examples.SparkPi --deploy-mode client --master spark://192.168.99.100:30077 examples/jars/spark-examples_2.11-2.2.1.jar 10000
+```
+Stimulate CPU usage in a pod :
+
+``` shell
+dd if=/dev/urandom | bzip2 -9 >> /dev/null
+```
+
 S3FS
 ----
 
