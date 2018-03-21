@@ -8,6 +8,8 @@ This repo is decomposed in several proofs of concept :
       * [Livy + Spark 2.3 using Kubernetes scheduler](#livy--spark-23-using-kubernetes-scheduler)
       * [Spark cluster deployed on Kubernetes](#spark-cluster-deployed-on-kubernetes)
       * [S3FS](#s3fs)
+      * [Monitoring your cluster state with Prometheus](#monitoring-your-cluster-state-with-prometheus)
+      * [Using Azure blob storage and Azure disk](#using-azure-blob-storage-and-azure-disk)
 <!--te-->
 
 Proofs of concept
@@ -17,42 +19,33 @@ Kubernetes Operations (kops)
 ----------------------------
 
 This proof of concept aims at creating a Kubernetes cluster on Amazon AWS with multiple ec2 instances.
+
 The tool used is kops and it allows to automatically setup and provision ec2 instances to form a Kubernetes cluster.
 
+Details are available in the [kops directory](https://github.com/ttauveron/spark_k8s/tree/master/kops)
 
-Livy + Spark 2.3 using Kubernetes scheduler
--------------------------------------------
+In that directory, we have the yaml configuration of the Kubernetes cluster created by kops.
 
-This proof of concept allows you to use Spark 2.3 Kubernetes features.
-Spark 2.3 is able to submit Spark jobs (only in cluster deploy mode) to a Kubernetes cluster.
-It will use the Kubernetes scheduler to create Spark drivers and executors dynamically.
+Ideally, we should create the cluster using that config, but for now, the cluster is created executing the bash script **setup-aws.sh**
 
-Spark cluster deployed on Kubernetes
-------------------------------------
+You can change configuration values of that script editing environment variables defined at the top of the file.
 
-This proof of concept is a more traditionnal approach where you deploy manually Spark to a Kubernetes cluster.
-It shows how to scale the Spark number of replicas and the number of ec2 nodes in AWS.
-However, there is still some work to be done to make it fully functional, especially making sure that there is only one Spark pod running on a given node.
-In order to scale pods or nodes, it uses heapter metrics such as percentage of RAM/CPU used.
+Note that kops is using S3 to backup the cluster state.
 
-S3FS
-----
+Here are the options used to create or delete the cluster on AWS : 
+```shell
+# Creating the cluster on AWS
+./setup-aws.sh --create
 
-This is kind of a hack to expose your Spark jobs (jars) hosted on S3 so that they can be used with Spark 2.3 using Kubernetes scheduler.
-The Spark 2.3 container is responsible for downloading dependencies (this is done in its initcontainer). 
-However, the initcontainer doesn't seem able (yet) to download the Spark jar container the job with s3://.
-S3FS is, consequently, responsible of mounting a S3 bucket as a file system in a container and exposing its content through HTTP, internally to the Kubernetes cluster. 
-This allows the initcontainer to download the job through HTTP.
+# Removing the cluster on AWS (including the S3 backup storage)
+./setup-aws.sh --delete
+```
 
+**Note for the following sections**
 
+Whether you're using kops to create a cluster on AWS or, say an AKS cluster (Kubernetes as a Service on Azure), you will need to setup your AWS and Azure credentials in Kubernetes to access respectively your S3 bucket and your Azure blob storage container.
 
-
-
---TODO
-
-
-
-Then, launch the Spark cluster creation
+Create those credentials using the following commands before applying the following Kubernetes configurations: 
 
 ``` shell
 kubectl create secret generic aws \
@@ -62,90 +55,105 @@ kubectl create secret generic aws \
 kubectl create secret generic azure \
     --from-literal=storageaccount=STORAGE_ACCOUNT_NAME \
     --from-literal=storageaccesskey=STORAGE_ACCOUNT_ACCESS_KEY
-
-kubectl create -f spark-k8s
-```
-
-# Use Kubernetes scheduler with Spark's Kubernetes capabilities
-
-First, download Spark 2.3
-
-``` shell
-wget -P /opt https://www.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-hadoop2.7.tgz
-cd /opt
-tar xvzf spark-2.3.0-bin-hadoop2.7.tgz
-rm spark-2.3.0-bin-hadoop2.7.tgz
-cd spark-2.3.0-bin-hadoop2.7
-```
-
-Before building the docker container, add the following lines to **/opt/spark-2.3.0-bin-hadoop2.7/kubernetes/dockerfiles/spark/Dockerfile**
-
-```Dockerfile
-RUN wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/amazonaws/aws-java-sdk/1.7.4/aws-java-sdk-1.7.4.jar && \
-    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-aws/2.7.3/hadoop-aws-2.7.3.jar && \
-    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/com/microsoft/azure/azure-storage/7.0.0/azure-storage-7.0.0.jar && \
-    wget -P ${SPARK_HOME}/jars http://central.maven.org/maven2/org/apache/hadoop/hadoop-azure/2.7.5/hadoop-azure-2.7.5.jar
-
 ```
 
 
-``` shell
-# Build docker spark image and push it to dockerhub
-bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 build
-bin/docker-image-tool.sh -r gnut3ll4 -t v1.0.2 push
+Livy + Spark 2.3 using Kubernetes scheduler
+-------------------------------------------
 
-kubectl proxy --address 0.0.0.0 --port=8443 --accept-hosts ".*"&
+This proof of concept allows you to use Spark 2.3 Kubernetes features.
 
-# Submit a job to the kubernetes cluster
-bin/spark-submit --master k8s://http://127.0.0.1:8443 --deploy-mode cluster --name spark-pi --class org.apache.spark.examples.SparkPi --conf spark.executor.instances=5 --conf spark.kubernetes.container.image=gnut3ll4/spark:v1.0.2 local:///opt/spark/examples/target/original-spark-examples_2.11-2.3.0.jar
-```
+Spark 2.3 is able to submit Spark jobs (only in cluster deploy mode) to a Kubernetes cluster.
 
+That means you cannot use it with a spark-shell, only spark-submit and you cannot upload your jar with spark-submit, so it has to be available locally or through http (yet).
 
-# Livy REST API Testing
+It will use the Kubernetes scheduler to create Spark drivers and executors dynamically.
 
-You can use Postman (https://www.getpostman.com/) and import the postman collection in the repo to test Livy REST API.
+Refer to the [Livy/Spark README](https://github.com/ttauveron/spark_k8s/blob/master/livy-spark-2.3/README.md) for more details.
 
-#### Create a session
-```shell
-curl -X POST \
-  http://192.168.99.100:30998/sessions \
-  -H 'content-type: application/json' \
-  -d '{
-	"kind": "spark"
-}'
-```
+Spark cluster deployed on Kubernetes
+------------------------------------
 
-#### List sesssions
-```shell
-curl -X GET http://192.168.99.100:30998/sessions
-```
-#### Get session (id=0)
+This proof of concept is a more traditionnal approach where you deploy manually Spark to a Kubernetes cluster.
+
+It shows how to scale the Spark number of replicas and the number of ec2 nodes in AWS.
+
+However, there is still some work to be done to make it fully functional, especially making sure that there is only one Spark pod running on a given node.
+
+In order to scale pods or nodes, it uses heapter metrics such as percentage of RAM/CPU used.
+
+To apply that configuration on Kubernetes, run the following command : 
 
 ```shell
-curl -X GET http://192.168.99.100:30998/sessions/0
+kubectl apply -f spark-cluster-k8s/
 ```
+Zeppelin notebooks are included in that repo.
+[Zeppelin](https://zeppelin.apache.org/) is an interface to execute code in the Spark cluster. 
 
-#### Create a statement in a session (= send scala to Spark)
+Unlike the Kubernetes features on Spark 2.3, you can use spark-shell as we deploy manually our Spark workers and drivers.
+
+S3FS
+----
+
+This is kind of a hack to expose your Spark jobs (jars) hosted on S3 so that they can be used with Spark 2.3 using Kubernetes scheduler.
+
+The Spark 2.3 container is responsible for downloading dependencies (this is done in its initcontainer). 
+
+However, the initcontainer doesn't seem able (yet) to download the Spark jar containing the job with s3://.
+
+S3FS is, consequently, responsible of mounting a S3 bucket as a file system in a container and exposing its content through HTTP, internally to the Kubernetes cluster. 
+
+This allows the initcontainer to download the job through HTTP.
+
+Monitoring your cluster state with Prometheus
+---------------------------------------------
+
+Simply follow instructions described in that repo : 
+https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus
+
+More precisely [that part](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/hack/cluster-monitoring)
+
+It can be extended to add things to monitor, for example using the Prometheus blackbox exporter (querying website through http to check they're alive).
+
+Using Azure blob storage and Azure disk
+---------------------------------------
+
+#### Setup Azure on your local machine
+
+First, make sure you have installed Azure CLI on your machine (https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest). It will make it much easier than to do it in the Azure console. 
+
+Then, enter `az login` in your terminal, it will give you a link and a code. Enter the code on the webpage to authentify your computer. 
+
+The login token will be valid until it goes for 14 days without being used. Note: the token is generated for your default subscription.
+
+Now to use kubectl on your terminal enter `az aks get-credentials --resource-group=spark-k8s --name=<cluster-name>`
+
+#### Testing Azure blob storage
+
+First, create a storage account on Azure named, say, testttauveron
+Ref : https://docs.microsoft.com/en-us/azure/storage/blobs/storage-how-to-use-blobs-cli
 
 ```shell
-curl -X POST \
-  http://192.168.99.100:30998/sessions/0/statements \
-  -H 'content-type: application/json' \
-  -d '{"code": "val NUM_SAMPLES = 100000;\nval count = sc.parallelize(1 to NUM_SAMPLES).map { i =>\nval x = Math.random();\nval y = Math.random();\nif (x*x + y*y < 1) 1 else 0\n}.reduce(_ + _);\nprintln(\"Pi is roughly \" + 4.0 * count / NUM_SAMPLES)"}'
+
+az storage container create --name mystoragecontainer \
+    --account-name testttauveron
+
+az storage container set-permission --name mystoragecontainer \
+    --public-access blob \
+    --account-name testttauveron
+
+az storage blob upload --container-name mystoragecontainer \
+    --name spark-examples_2.11-2.3.0.jar \
+    --file spark-examples_2.11-2.3.0.jar \
+    --account-name testttauveron
+
+az storage blob list --container-name mystoragecontainer \
+    --account-name testttauveron
+
 ```
 
-#### List statements of a session
+#### Proof of concept using Azure storage to mount a volume
 
-```shell
-curl -X GET http://192.168.99.100:30998/sessions/0/statements
-```
+In [this other repo](https://github.com/ttauveron/k8s-dev), we are setuping a Gitlab platform which uses Azure storage to backup/mount the data folder.
 
-#### Get result of a statement
-
-```shell
-curl -X GET http://192.168.99.100:30998/sessions/0/statements/0
-```
-
-# Zeppelin Notebooks
-
-[Zeppelin](https://zeppelin.apache.org/) is an interface to execute code in the Spark cluster. You can access it at [http://192.168.99.100:30111](http://192.168.99.100:30111).
+That means we can reuse the data volumes on Azure, for backup or migration purpose.
