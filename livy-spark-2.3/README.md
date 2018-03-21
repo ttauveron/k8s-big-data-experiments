@@ -24,7 +24,7 @@ As a result, you can use Livy to submit a Spark job.
 You can use Postman (https://www.getpostman.com/) and import [the provided postman collection in the repo](https://github.com/ttauveron/spark_k8s/blob/master/Livy%20REST%20API.postman_collection.json) (available at the root of the repo) to test Livy REST API.
 
 Sessions are not working with Spark 2.3 Kubernetes features as spark-shell is not yet implemented, therefore, only 2.X request will be working because Spark 2.3 using Kubernetes doesn't support interactive shell.
-In the Postman Collection, you can configure a collection variable to define yhe Livy IP for all requests. Details available in here : https://www.getpostman.com/docs/v6/postman/environments_and_globals/variables#defining-collection-variables
+In the Postman Collection, you can configure a collection variable to define the Livy IP for all requests. Details available in here : https://www.getpostman.com/docs/v6/postman/environments_and_globals/variables#defining-collection-variables
 
 Try the *Batch - Submit jar* request for example.
 
@@ -47,7 +47,13 @@ kubectl proxy --address 0.0.0.0 --port=8443 --accept-hosts ".*"&
 
 Submit a job to the kubernetes cluster :
 ```shell
-bin/spark-submit --master k8s://http://127.0.0.1:8443 --deploy-mode cluster --name spark-pi --class org.apache.spark.examples.SparkPi --conf spark.executor.instances=5 --conf spark.kubernetes.container.image=gnut3ll4/spark:v1.0.2 local:///opt/spark/examples/target/original-spark-examples_2.11-2.3.0.jar
+bin/spark-submit --master k8s://http://127.0.0.1:8443 \
+         --deploy-mode cluster \
+         --name spark-pi \
+         --class org.apache.spark.examples.SparkPi \
+         --conf spark.executor.instances=5 \
+         --conf spark.kubernetes.container.image=gnut3ll4/spark:v1.0.2 \
+         local:///opt/spark/examples/target/original-spark-examples_2.11-2.3.0.jar
 ```
 
 The livy-deployment (running on Kubernetes) uses a sidecar container in its pod in order to provide a kubectl proxy. Actually, Spark will be using Kubernetes API to create Spark driver and executors pods.
