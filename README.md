@@ -120,9 +120,7 @@ Monitoring your cluster state with Prometheus
 ---------------------------------------------
 
 Simply follow instructions described in that repo : 
-https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus
-
-More precisely [that part](https://github.com/coreos/prometheus-operator/tree/master/contrib/kube-prometheus/hack/cluster-monitoring)
+https://github.com/coreos/prometheus-operator
 
 It can be extended to add things to monitor, for example using the Prometheus blackbox exporter (querying website through http to check they're alive).
 
