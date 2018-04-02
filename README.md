@@ -10,6 +10,7 @@ This repo is decomposed in several proofs of concept :
       * [S3FS](#s3fs)
       * [Monitoring your cluster state with Prometheus](#monitoring-your-cluster-state-with-prometheus)
       * [Using Azure blob storage and Azure disk](#using-azure-blob-storage-and-azure-disk)
+      * [Logs ingestion & analytics](#logs-ingestion--analytics)
 <!--te-->
 
 Proofs of concept
@@ -168,3 +169,17 @@ In [this other repo](https://github.com/ttauveron/k8s-dev), we are setuping a Gi
 That means we can reuse the data volumes on Azure, for backup or migration purpose.
 
 We are also using a Kubernetes storage class. This is used to dynamically provision a volume in Kubernetes with a given cloud provider storage service.
+
+#### Logs ingestion & analytics
+
+You can install the EFK (ElasticSearch, Fluentd, Kibana) stack on your kubernetes cluster.
+Fluentd will be responsible for ingesting logs from all pods in all namespaces and store them in elasticsearch.
+Kibana will be connected to elastucsearch to allow analytics on those logs (searching logs, graphs ...)
+
+This stack is available here : 
+https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/fluentd-elasticsearch
+
+To setup alterting, ElastAlert can be used chart helm available : [stable/elastalert](https://github.com/kubernetes/charts/tree/master/stable/elastalert). 
+
+Rule types : https://elastalert.readthedocs.io/en/latest/ruletypes.html#rule-types
+
