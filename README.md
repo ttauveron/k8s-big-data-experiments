@@ -23,7 +23,7 @@ This proof of concept aims at creating a Kubernetes cluster on Amazon AWS with m
 
 The tool used is kops and it allows to automatically setup and provision ec2 instances to form a Kubernetes cluster.
 
-Details are available in the [kops directory](https://github.com/ttauveron/spark_k8s/tree/master/kops)
+Details are available in the [kops directory](./kops)
 
 In that directory, we have the yaml configuration of the Kubernetes cluster created by kops.
 
@@ -70,7 +70,7 @@ That means you cannot use it with a spark-shell, only spark-submit and you canno
 
 It will use the Kubernetes scheduler to create Spark drivers and executors dynamically.
 
-Refer to the [Livy/Spark README](https://github.com/ttauveron/spark_k8s/blob/master/livy-spark-2.3/README.md) for more details.
+Refer to the [Livy/Spark README](./livy-spark-2.3/README.md) for more details.
 
 Spark cluster deployed on Kubernetes
 ------------------------------------
@@ -190,7 +190,7 @@ You can now access the blobs of your container with this token! (--sas-token $sa
 
 #### Proof of concept using Azure storage to mount a volume
 
-In [this other repo](https://github.com/ttauveron/k8s-dev), we are setuping a Gitlab platform which uses Azure storage to backup/mount the data folder.
+In [this directory](./azure-storageclass), we are setuping a Gitlab platform which uses Azure storage to backup/mount the data folder.
 
 That means we can reuse the data volumes on Azure, for backup or migration purpose.
 
