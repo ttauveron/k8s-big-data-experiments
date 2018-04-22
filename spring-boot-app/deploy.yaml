@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: greeter-service
+  labels:
+    run: greeter
+spec:
+  ports:
+  - port: 8080
+    nodePort: 30080
+    protocol: TCP
+  selector:
+    run: greeter
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userdb-service
+  labels:
+    run: userdb
+spec:
+  ports:
+  - port: 12679
+    nodePort: 30679
+    protocol: TCP
+  selector:
+    run: userdb
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-service
+  labels:
+    run: config
+spec:
+  ports:
+  - port: 8888
+    nodePort: 30088
+    protocol: TCP
+  selector:
+    run: config
+  type: NodePort
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: greeter-deployment
+  labels:
+    app: k8s-springboot
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-springboot
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: 
+        app: k8s-springboot
+        run: greeter
+    spec:
+      hostname: greeter
+      containers:
+      - name: greeter
+        image: rytis6lod/greeter-test
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 5
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: userdb-deployment
+  labels:
+    app: k8s-springboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-springboot
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: k8s-springboot
+        run: userdb
+    spec:
+      hostname: userdb
+      containers:
+      - name: userdb
+        image: rytis6lod/userdb-test
+        ports:
+        - containerPort: 12679
+        readinessProbe:
+          httpGet:
+            path: /demo/health
+            port: 12679
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /demo/ping
+            port: 12679
+          initialDelaySeconds: 120
+          periodSeconds: 5
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: config-deployment
+  labels:
+    app: k8s-springboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-springboot
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: k8s-springboot
+        run: config
+    spec:
+      hostname: config
+      containers:
+      - name: config
+        image: rytis6lod/config-test
+        env:
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: url
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: password
+        ports:
+        - containerPort: 8888
