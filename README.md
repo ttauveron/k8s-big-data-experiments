@@ -13,6 +13,8 @@ This repo is decomposed in several proofs of concept :
       * [Logs ingestion & analytics](#logs-ingestion--analytics)
 <!--te-->
 
+(Project report available in french on Alain April's website : https://publicationslist.org/data/a.april/ref-615/TickSmith%20Rapport-final.pdf)
+
 Proofs of concept
 =================
 
